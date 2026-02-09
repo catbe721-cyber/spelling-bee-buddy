@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { DictationList } from '../types';
-import { Button } from './Button';
-import { speakWord } from '../utils/speechUtils';
-import { Volume2, Eye, EyeOff, ChevronRight, ChevronLeft, RotateCcw, XCircle } from 'lucide-react';
+import { DictationList } from '../types.ts';
+import { Button } from './Button.tsx';
+import { speakWord } from '../utils/speechUtils.ts';
+import { Volume2, Eye, EyeOff, ChevronRight, ChevronLeft, XCircle } from 'lucide-react';
 
 interface Props {
   list: DictationList;
@@ -19,9 +19,7 @@ export const DictationSession: React.FC<Props> = ({ list, onComplete, onExit }) 
   const progress = Math.round(((currentIndex + 1) / list.words.length) * 100);
 
   useEffect(() => {
-    // Reset reveal state when moving to a new word
     setIsRevealed(false);
-    // Auto-play sound after a short delay for smoother transition
     const timer = setTimeout(() => handleSpeak(), 600);
     return () => clearTimeout(timer);
   }, [currentIndex]);
@@ -29,7 +27,6 @@ export const DictationSession: React.FC<Props> = ({ list, onComplete, onExit }) 
   const handleSpeak = () => {
     setIsPlaying(true);
     speakWord(currentWord);
-    // Simple timeout to reset playing state visually
     setTimeout(() => setIsPlaying(false), 1500);
   };
 
@@ -53,7 +50,6 @@ export const DictationSession: React.FC<Props> = ({ list, onComplete, onExit }) 
 
   return (
     <div className="flex flex-col h-full gap-6">
-      {/* Top Bar */}
       <div className="flex justify-between items-center">
         <button 
           onClick={onExit}
@@ -66,7 +62,6 @@ export const DictationSession: React.FC<Props> = ({ list, onComplete, onExit }) 
         </div>
       </div>
 
-      {/* Progress Bar */}
       <div className="w-full h-4 bg-slate-200 rounded-full overflow-hidden">
         <div 
           className="h-full bg-indigo-500 transition-all duration-500 ease-out"
@@ -74,14 +69,10 @@ export const DictationSession: React.FC<Props> = ({ list, onComplete, onExit }) 
         />
       </div>
 
-      {/* Main Card */}
       <div className="flex-1 bg-white rounded-3xl shadow-xl border-b-8 border-slate-100 p-8 flex flex-col items-center justify-center gap-8 relative overflow-hidden">
-        
-        {/* Decorative background elements */}
         <div className="absolute top-0 left-0 w-32 h-32 bg-yellow-100 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 opacity-50"></div>
         <div className="absolute bottom-0 right-0 w-32 h-32 bg-blue-100 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 opacity-50"></div>
 
-        {/* Word Display Area */}
         <div className="flex flex-col items-center w-full z-10">
           <div className={`
             text-4xl md:text-6xl font-bold tracking-wide text-center transition-all duration-300
@@ -94,7 +85,6 @@ export const DictationSession: React.FC<Props> = ({ list, onComplete, onExit }) 
           </p>
         </div>
 
-        {/* Main Action: Play Sound */}
         <div className="z-10">
             <button 
               onClick={handleSpeak}
@@ -107,10 +97,8 @@ export const DictationSession: React.FC<Props> = ({ list, onComplete, onExit }) 
             </button>
             <p className="text-center mt-4 text-slate-500 font-bold text-lg">Tap to Listen</p>
         </div>
-
       </div>
 
-      {/* Controls */}
       <div className="grid grid-cols-2 gap-4">
         <Button 
           variant={isRevealed ? "secondary" : "outline"} 
@@ -126,7 +114,6 @@ export const DictationSession: React.FC<Props> = ({ list, onComplete, onExit }) 
         </Button>
         
         <div className="flex gap-2">
-            {/* Previous button only shows if not first word */}
             {currentIndex > 0 && (
                 <Button variant="secondary" onClick={handlePrev} size="lg" className="px-4">
                     <ChevronLeft size={28} />

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { DictationList, AppState } from './types';
-import { SelectionScreen } from './components/SelectionScreen';
-import { DictationSession } from './components/DictationSession';
-import { CompletionScreen } from './components/CompletionScreen';
+import { DictationList, AppState } from './types.ts';
+import { SelectionScreen } from './components/SelectionScreen.tsx';
+import { DictationSession } from './components/DictationSession.tsx';
+import { CompletionScreen } from './components/CompletionScreen.tsx';
 import { BookOpen } from 'lucide-react';
 
 // Default lists that appear if no local storage is found
@@ -24,7 +24,6 @@ const DEFAULT_LISTS: DictationList[] = [
 export default function App() {
   const [lists, setLists] = useState<DictationList[]>(() => {
     const saved = localStorage.getItem('dictationLists');
-    // If local storage has data, use it. Otherwise, use the hardcoded defaults.
     return saved ? JSON.parse(saved) : DEFAULT_LISTS;
   });
 

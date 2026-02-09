@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { DictationList } from '../types';
-import { Button } from './Button';
+import { DictationList } from '../types.ts';
+import { Button } from './Button.tsx';
 import { Plus, Trash2, Calendar, ChevronRight, X } from 'lucide-react';
 
 interface Props {
@@ -21,7 +21,7 @@ export const SelectionScreen: React.FC<Props> = ({ lists, onSelect, onAdd, onDel
     if (!newDate || !newWords.trim()) return;
 
     const wordsArray = newWords
-      .split(/[\n,]+/) // Split by newline or comma
+      .split(/[\n,]+/)
       .map(w => w.trim())
       .filter(w => w.length > 0);
 
