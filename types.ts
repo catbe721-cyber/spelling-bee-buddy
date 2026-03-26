@@ -5,7 +5,7 @@ export interface DictationList {
   words: string[];
 }
 
-export type AppState = 'SELECTION' | 'PRACTICE' | 'COMPLETION';
+export type AppState = 'SELECTION' | 'PRACTICE' | 'COMPLETION' | 'EDIT';
 
 export interface VoiceOption {
   name: string;

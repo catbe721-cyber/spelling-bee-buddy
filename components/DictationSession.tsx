@@ -51,7 +51,7 @@ export const DictationSession: React.FC<Props> = ({ list, onComplete, onExit }) 
   return (
     <div className="flex flex-col h-full gap-6">
       <div className="flex justify-between items-center">
-        <button 
+        <button
           onClick={onExit}
           className="flex items-center text-slate-500 font-bold hover:text-slate-800"
         >
@@ -63,7 +63,7 @@ export const DictationSession: React.FC<Props> = ({ list, onComplete, onExit }) 
       </div>
 
       <div className="w-full h-4 bg-slate-200 rounded-full overflow-hidden">
-        <div 
+        <div
           className="h-full bg-indigo-500 transition-all duration-500 ease-out"
           style={{ width: `${progress}%` }}
         />
@@ -86,23 +86,23 @@ export const DictationSession: React.FC<Props> = ({ list, onComplete, onExit }) 
         </div>
 
         <div className="z-10">
-            <button 
-              onClick={handleSpeak}
-              className={`
+          <button
+            onClick={handleSpeak}
+            className={`
                 w-32 h-32 rounded-full flex items-center justify-center shadow-lg transform transition-all duration-200
                 ${isPlaying ? 'bg-indigo-600 scale-95 ring-4 ring-indigo-200' : 'bg-indigo-500 hover:bg-indigo-600 hover:-translate-y-1 active:scale-95 active:translate-y-0'}
               `}
-            >
-              <Volume2 size={48} color="white" strokeWidth={2.5} className={isPlaying ? 'animate-pulse' : ''} />
-            </button>
-            <p className="text-center mt-4 text-slate-500 font-bold text-lg">Tap to Listen</p>
+          >
+            <Volume2 size={48} color="white" strokeWidth={2.5} className={isPlaying ? 'animate-pulse' : ''} />
+          </button>
+          <p className="text-center mt-4 text-slate-500 font-bold text-lg">Tap to Listen</p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <Button 
-          variant={isRevealed ? "secondary" : "outline"} 
-          onClick={toggleReveal} 
+        <Button
+          variant={isRevealed ? "secondary" : "outline"}
+          onClick={toggleReveal}
           fullWidth
           size="lg"
         >
@@ -112,18 +112,18 @@ export const DictationSession: React.FC<Props> = ({ list, onComplete, onExit }) 
             <><Eye size={24} className="mr-2" /> Show Word</>
           )}
         </Button>
-        
+
         <div className="flex gap-2">
-            {currentIndex > 0 && (
-                <Button variant="secondary" onClick={handlePrev} size="lg" className="px-4">
-                    <ChevronLeft size={28} />
-                </Button>
-            )}
-            
-            <Button variant="success" onClick={handleNext} fullWidth size="lg">
-                {currentIndex === list.words.length - 1 ? 'Finish' : 'Next'} 
-                <ChevronRight size={24} className="ml-2" />
+          {currentIndex > 0 && (
+            <Button variant="secondary" onClick={handlePrev} size="lg" className="px-4">
+              <ChevronLeft size={28} /> Back
             </Button>
+          )}
+
+          <Button variant="success" onClick={handleNext} fullWidth size="lg">
+            {currentIndex === list.words.length - 1 ? 'Finish' : 'Next'}
+            <ChevronRight size={24} className="ml-2" />
+          </Button>
         </div>
       </div>
     </div>

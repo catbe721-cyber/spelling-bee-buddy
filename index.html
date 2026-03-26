@@ -1,219 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spelling Bee Buddy</title>
-    <!-- Tailwind CSS for styling -->
+    <!-- Tailwind CSS (via CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Babel for on-the-fly JSX transpilation in the browser -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Comic Sans MS', 'Chalkboard SE', 'sans-serif'],
-                    }
-                }
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Comic Sans MS', 'Chalkboard SE', 'sans-serif'],
             }
+          }
         }
+      }
     </script>
-    <style>
-        body {
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
-            background-color: #f8fafc;
-        }
-        .animate-pop {
-            animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes pop {
-            0% { transform: scale(0.9); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-    </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="root"></div>
-
-    <!-- Load React and Lucide Icons via ESM -->
-    <script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@18.2.0",
-    "react-dom": "https://esm.sh/react-dom@18.2.0",
-    "lucide-react": "https://esm.sh/lucide-react@0.263.1",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "react/": "https://esm.sh/react@^19.2.4/"
-  }
-}
-</script>
-
-    <script type="text/babel" data-type="module">
-        import React, { useState, useEffect, useMemo } from 'react';
-        import ReactDOM from 'react-dom';
-        import { 
-            BookOpen, Plus, Trash2, Calendar, ChevronRight, 
-            ChevronLeft, X, XCircle, Volume2, Eye, EyeOff, 
-            Home, RefreshCw, Trophy 
-        } from 'lucide-react';
-
-        // --- UTILS ---
-        const speakWord = (text, rate = 0.8) => {
-            if (!('speechSynthesis' in window)) return;
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-            utterance.rate = rate;
-            utterance.pitch = 1.1;
-            window.speechSynthesis.speak(utterance);
-        };
-
-        // --- COMPONENTS ---
-        const Button = ({ children, variant = 'primary', size = 'md', fullWidth = false, className = '', ...props }) => {
-            const baseStyles = "inline-flex items-center justify-center font-bold rounded-2xl transition-all duration-200 active:scale-95 focus:outline-none shadow-md";
-            const variants = {
-                primary: "bg-indigo-500 hover:bg-indigo-600 text-white border-b-4 border-indigo-700 active:border-b-0 active:translate-y-1",
-                secondary: "bg-white hover:bg-slate-50 text-slate-700 border-b-4 border-slate-300 active:border-b-0 active:translate-y-1",
-                success: "bg-green-500 hover:bg-green-600 text-white border-b-4 border-green-700 active:border-b-0 active:translate-y-1",
-                outline: "bg-transparent border-2 border-slate-300 text-slate-500 hover:text-slate-700 shadow-none"
-            };
-            const sizes = {
-                sm: "px-3 py-1.5 text-sm",
-                md: "px-6 py-3 text-base",
-                lg: "px-8 py-4 text-xl",
-                xl: "px-10 py-6 text-2xl",
-            };
-            return (
-                <button className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${fullWidth ? 'w-full' : ''} ${className}`} {...props}>
-                    {children}
-                </button>
-            );
-        };
-
-        const SelectionScreen = ({ lists, onSelect, onAdd, onDelete }) => {
-            const [isAdding, setIsAdding] = useState(false);
-            const [newDate, setNewDate] = useState(new Date().toISOString().split('T')[0]);
-            const [newTitle, setNewTitle] = useState('');
-            const [newWords, setNewWords] = useState('');
-
-            if (isAdding) {
-                return (
-                    <div className="bg-white rounded-3xl p-6 shadow-xl border-2 border-blue-100 animate-pop">
-                        <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-2xl font-bold text-slate-800">New List</h2>
-                            <button onClick={() => setIsAdding(false)} className="p-2 bg-slate-100 rounded-full text-slate-500"><X size={24} /></button>
-                        </div>
-                        <div className="flex flex-col gap-4">
-                            <input type="date" value={newDate} onChange={e => setNewDate(e.target.value)} className="w-full p-4 bg-slate-50 rounded-xl border-2 border-slate-200" />
-                            <input type="text" placeholder="Title (e.g. Week 5)" value={newTitle} onChange={e => setNewTitle(e.target.value)} className="w-full p-4 bg-slate-50 rounded-xl border-2 border-slate-200" />
-                            <textarea rows={5} placeholder="Paste words here..." value={newWords} onChange={e => setNewWords(e.target.value)} className="w-full p-4 bg-slate-50 rounded-xl border-2 border-slate-200" />
-                            <Button variant="success" size="lg" onClick={() => {
-                                const words = newWords.split(/[\n,]+/).map(w => w.trim()).filter(w => w.length > 0);
-                                if (words.length > 0) {
-                                    onAdd({ id: Date.now().toString(), date: newDate, title: newTitle || `List ${newDate}`, words });
-                                    setIsAdding(false);
-                                }
-                            }}>Save List</Button>
-                        </div>
-                    </div>
-                );
-            }
-
-            return (
-                <div className="flex flex-col gap-6 animate-pop">
-                    <div className="flex justify-between items-end">
-                        <h2 className="text-xl font-bold text-slate-700">Practice Lists</h2>
-                        <Button onClick={() => setIsAdding(true)} size="sm"><Plus size={20} className="mr-1" /> New List</Button>
-                    </div>
-                    <div className="grid gap-4">
-                        {lists.length === 0 ? <p className="text-center py-10 text-slate-400">No lists yet!</p> : lists.map(list => (
-                            <div key={list.id} onClick={() => onSelect(list.id)} className="bg-white rounded-2xl p-5 shadow-lg flex items-center justify-between cursor-pointer border-2 border-transparent hover:border-indigo-200 transition-all">
-                                <div>
-                                    <div className="text-indigo-500 font-bold text-xs uppercase mb-1">{list.date}</div>
-                                    <h3 className="text-xl font-bold text-slate-800">{list.title}</h3>
-                                    <p className="text-slate-400 text-sm">{list.words.length} words</p>
-                                </div>
-                                <div className="flex gap-2">
-                                    <button onClick={(e) => { e.stopPropagation(); onDelete(list.id); }} className="p-2 text-slate-300 hover:text-red-500"><Trash2 size={20} /></button>
-                                    <div className="bg-indigo-50 p-2 rounded-lg text-indigo-500"><ChevronRight size={24} /></div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            );
-        };
-
-        const DictationSession = ({ list, onComplete, onExit }) => {
-            const [idx, setIdx] = useState(0);
-            const [revealed, setRevealed] = useState(false);
-            const word = list.words[idx];
-
-            useEffect(() => {
-                setRevealed(false);
-                const t = setTimeout(() => speakWord(word), 500);
-                return () => clearTimeout(t);
-            }, [idx]);
-
-            return (
-                <div className="flex flex-col h-full gap-6 animate-pop">
-                    <div className="flex justify-between items-center">
-                        <button onClick={onExit} className="text-slate-400 font-bold flex items-center"><XCircle className="mr-1"/> Quit</button>
-                        <span className="bg-indigo-100 text-indigo-600 px-3 py-1 rounded-full font-bold">{idx + 1} / {list.words.length}</span>
-                    </div>
-                    <div className="bg-white rounded-3xl shadow-xl p-10 flex flex-col items-center justify-center gap-10 min-h-[300px]">
-                        <div className={`text-5xl font-bold transition-all ${revealed ? 'blur-0 text-slate-800' : 'blur-lg text-slate-200 select-none'}`}>
-                            {revealed ? word : '••••••'}
-                        </div>
-                        <button onClick={() => speakWord(word)} className="w-28 h-28 bg-indigo-500 rounded-full flex items-center justify-center shadow-xl active:scale-95 transition-transform">
-                            <Volume2 size={48} color="white" />
-                        </button>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                        <Button variant="outline" size="lg" onClick={() => setRevealed(!revealed)}>{revealed ? <EyeOff className="mr-2"/> : <Eye className="mr-2"/>} {revealed ? 'Hide' : 'Show'}</Button>
-                        <Button variant="success" size="lg" onClick={() => idx < list.words.length - 1 ? setIdx(idx + 1) : onComplete()}>Next <ChevronRight className="ml-1"/></Button>
-                    </div>
-                </div>
-            );
-        };
-
-        const App = () => {
-            const [lists, setLists] = useState(() => JSON.parse(localStorage.getItem('dictationLists') || '[]'));
-            const [view, setView] = useState('selection');
-            const [activeId, setActiveId] = useState(null);
-
-            useEffect(() => localStorage.setItem('dictationLists', JSON.stringify(lists)), [lists]);
-
-            const activeList = useMemo(() => lists.find(l => l.id === activeId), [activeId, lists]);
-
-            return (
-                <div className="max-w-xl mx-auto p-4 md:p-8 min-h-screen flex flex-col">
-                    <header className="flex items-center gap-3 mb-8">
-                        <div className="bg-indigo-500 p-3 rounded-2xl text-white shadow-lg"><BookOpen size={28}/></div>
-                        <h1 className="text-2xl font-bold text-slate-800">Spelling Bee Buddy</h1>
-                    </header>
-                    <main className="flex-1">
-                        {view === 'selection' && <SelectionScreen lists={lists} onSelect={id => { setActiveId(id); setView('play'); }} onAdd={l => setLists([l, ...lists])} onDelete={id => setLists(lists.filter(l => l.id !== id))} />}
-                        {view === 'play' && activeList && <DictationSession list={activeList} onExit={() => setView('selection')} onComplete={() => setView('done')} />}
-                        {view === 'done' && (
-                            <div className="text-center py-20 flex flex-col items-center gap-8 animate-pop">
-                                <Trophy size={100} className="text-yellow-400" />
-                                <h2 className="text-4xl font-bold">Amazing Work!</h2>
-                                <div className="w-full flex flex-col gap-4">
-                                    <Button variant="success" size="xl" fullWidth onClick={() => setView('play')}><RefreshCw className="mr-2"/> Play Again</Button>
-                                    <Button variant="secondary" size="xl" fullWidth onClick={() => setView('selection')}><Home className="mr-2"/> Home</Button>
-                                </div>
-                            </div>
-                        )}
-                    </main>
-                </div>
-            );
-        };
-
-        ReactDOM.render(<App />, document.getElementById('root'));
-    </script>
-</body>
+    <script type="module" src="/index.tsx"></script>
+  </body>
 </html>

@@ -3,6 +3,7 @@ import { DictationList, AppState } from './types.ts';
 import { SelectionScreen } from './components/SelectionScreen.tsx';
 import { DictationSession } from './components/DictationSession.tsx';
 import { CompletionScreen } from './components/CompletionScreen.tsx';
+import { EditListScreen } from './components/EditListScreen.tsx';
 import { BookOpen } from 'lucide-react';
 
 // Default lists that appear if no local storage is found
@@ -52,6 +53,17 @@ export default function App() {
     setLists([newList, ...lists]);
   };
 
+  const handleEditList = (id: string) => {
+    setActiveListId(id);
+    setAppState('EDIT');
+  };
+
+  const handleUpdateList = (updatedList: DictationList) => {
+    setLists(lists.map(l => l.id === updatedList.id ? updatedList : l));
+    setAppState('SELECTION');
+    setActiveListId(null);
+  };
+
   const handleDeleteList = (id: string) => {
     if (confirm('Are you sure you want to delete this list?')) {
       setLists(lists.filter(l => l.id !== id));
@@ -75,24 +87,33 @@ export default function App() {
 
       <main className="w-full max-w-2xl flex-1 flex flex-col">
         {appState === 'SELECTION' && (
-          <SelectionScreen 
-            lists={lists} 
-            onSelect={handleStartList} 
+          <SelectionScreen
+            lists={lists}
+            onSelect={handleStartList}
             onAdd={handleAddList}
             onDelete={handleDeleteList}
+            onEdit={handleEditList}
           />
         )}
-        
+
         {appState === 'PRACTICE' && activeList && (
-          <DictationSession 
-            list={activeList} 
+          <DictationSession
+            list={activeList}
             onComplete={handleComplete}
             onExit={handleHome}
           />
         )}
 
+        {appState === 'EDIT' && activeList && (
+          <EditListScreen
+            list={activeList}
+            onSave={handleUpdateList}
+            onCancel={handleHome}
+          />
+        )}
+
         {appState === 'COMPLETION' && (
-          <CompletionScreen 
+          <CompletionScreen
             onHome={handleHome}
             onRestart={() => setAppState('PRACTICE')}
           />

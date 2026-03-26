@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { DictationList } from '../types.ts';
 import { Button } from './Button.tsx';
-import { Plus, Trash2, Calendar, ChevronRight, X } from 'lucide-react';
+import { Plus, Trash2, Calendar, ChevronRight, X, Edit } from 'lucide-react';
 
 interface Props {
   lists: DictationList[];
   onSelect: (id: string) => void;
   onAdd: (list: DictationList) => void;
   onDelete: (id: string) => void;
+  onEdit: (id: string) => void;
 }
 
-export const SelectionScreen: React.FC<Props> = ({ lists, onSelect, onAdd, onDelete }) => {
+export const SelectionScreen: React.FC<Props> = ({ lists, onSelect, onAdd, onDelete, onEdit }) => {
   const [isAdding, setIsAdding] = useState(false);
   const [newDate, setNewDate] = useState('');
   const [newTitle, setNewTitle] = useState('');
@@ -51,8 +52,8 @@ export const SelectionScreen: React.FC<Props> = ({ lists, onSelect, onAdd, onDel
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
             <label className="block text-sm font-bold text-slate-600 mb-1">Date</label>
-            <input 
-              type="date" 
+            <input
+              type="date"
               required
               value={newDate}
               onChange={e => setNewDate(e.target.value)}
@@ -61,8 +62,8 @@ export const SelectionScreen: React.FC<Props> = ({ lists, onSelect, onAdd, onDel
           </div>
           <div>
             <label className="block text-sm font-bold text-slate-600 mb-1">Title (Optional)</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="e.g. Science Words"
               value={newTitle}
               onChange={e => setNewTitle(e.target.value)}
@@ -71,7 +72,7 @@ export const SelectionScreen: React.FC<Props> = ({ lists, onSelect, onAdd, onDel
           </div>
           <div>
             <label className="block text-sm font-bold text-slate-600 mb-1">Words (Paste here)</label>
-            <textarea 
+            <textarea
               rows={6}
               placeholder="Paste words here, separated by commas or new lines..."
               value={newWords}
@@ -106,8 +107,8 @@ export const SelectionScreen: React.FC<Props> = ({ lists, onSelect, onAdd, onDel
           </div>
         ) : (
           lists.map(list => (
-            <div 
-              key={list.id} 
+            <div
+              key={list.id}
               className="group bg-white rounded-2xl p-4 pl-6 shadow-lg border-2 border-transparent hover:border-indigo-200 transition-all flex items-center justify-between cursor-pointer"
               onClick={() => onSelect(list.id)}
             >
@@ -119,9 +120,15 @@ export const SelectionScreen: React.FC<Props> = ({ lists, onSelect, onAdd, onDel
                 <h3 className="text-xl font-bold text-slate-800">{list.title}</h3>
                 <p className="text-slate-400 font-medium mt-1">{list.words.length} words</p>
               </div>
-              
+
               <div className="flex items-center gap-3">
-                 <button 
+                <button
+                  onClick={(e) => { e.stopPropagation(); onEdit(list.id); }}
+                  className="p-3 text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 rounded-xl transition-colors"
+                >
+                  <Edit size={20} />
+                </button>
+                <button
                   onClick={(e) => { e.stopPropagation(); onDelete(list.id); }}
                   className="p-3 text-slate-300 hover:text-red-400 hover:bg-red-50 rounded-xl transition-colors"
                 >
