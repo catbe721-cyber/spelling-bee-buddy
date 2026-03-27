@@ -74,7 +74,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex flex-col items-center p-4 md:p-8 font-sans">
-      <header className="w-full max-w-2xl flex items-center justify-between mb-6">
+      <header className="w-full max-w-6xl flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-indigo-500 rounded-2xl shadow-lg text-white">
             <BookOpen size={28} strokeWidth={2.5} />
@@ -85,38 +85,46 @@ export default function App() {
         </div>
       </header>
 
-      <main className="w-full max-w-2xl flex-1 flex flex-col">
+      <main className="w-full max-w-6xl flex-1 flex flex-col">
         {appState === 'SELECTION' && (
-          <SelectionScreen
-            lists={lists}
-            onSelect={handleStartList}
-            onAdd={handleAddList}
-            onDelete={handleDeleteList}
-            onEdit={handleEditList}
-          />
+          <div className="w-full">
+            <SelectionScreen
+              lists={lists}
+              onSelect={handleStartList}
+              onAdd={handleAddList}
+              onDelete={handleDeleteList}
+              onEdit={handleEditList}
+            />
+          </div>
         )}
 
         {appState === 'PRACTICE' && activeList && (
-          <DictationSession
-            list={activeList}
-            onComplete={handleComplete}
-            onExit={handleHome}
-          />
+          <div className="w-full max-w-4xl mx-auto flex-1 flex flex-col">
+            <DictationSession
+              list={activeList}
+              onComplete={handleComplete}
+              onExit={handleHome}
+            />
+          </div>
         )}
 
         {appState === 'EDIT' && activeList && (
-          <EditListScreen
-            list={activeList}
-            onSave={handleUpdateList}
-            onCancel={handleHome}
-          />
+          <div className="w-full max-w-3xl mx-auto flex-1 flex flex-col">
+            <EditListScreen
+              list={activeList}
+              onSave={handleUpdateList}
+              onCancel={handleHome}
+            />
+          </div>
         )}
 
         {appState === 'COMPLETION' && (
-          <CompletionScreen
-            onHome={handleHome}
-            onRestart={() => setAppState('PRACTICE')}
-          />
+          <div className="w-full max-w-2xl mx-auto flex-1 flex flex-col">
+            <CompletionScreen
+              onHome={handleHome}
+              onRestart={() => setAppState('PRACTICE')}
+            />
+          </div>
         )}
       </main>
 

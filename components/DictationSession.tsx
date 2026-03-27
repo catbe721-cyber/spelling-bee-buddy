@@ -53,16 +53,16 @@ export const DictationSession: React.FC<Props> = ({ list, onComplete, onExit }) 
       <div className="flex justify-between items-center">
         <button
           onClick={onExit}
-          className="flex items-center text-slate-500 font-bold hover:text-slate-800"
+          className="flex items-center text-slate-500 font-bold hover:text-slate-800 text-lg md:text-xl py-2 border-2 border-transparent focus:border-indigo-400 rounded-xl px-2 -mx-2 outline-none"
         >
-          <XCircle size={24} className="mr-1" /> Quit
+          <XCircle size={28} className="mr-2" /> Quit
         </button>
-        <div className="text-indigo-600 font-bold bg-indigo-100 px-3 py-1 rounded-full text-sm">
+        <div className="text-indigo-600 font-bold bg-indigo-100 px-4 py-2 rounded-full text-base md:text-lg">
           {currentIndex + 1} / {list.words.length}
         </div>
       </div>
 
-      <div className="w-full h-4 bg-slate-200 rounded-full overflow-hidden">
+      <div className="w-full h-6 bg-slate-200 rounded-full overflow-hidden">
         <div
           className="h-full bg-indigo-500 transition-all duration-500 ease-out"
           style={{ width: `${progress}%` }}
@@ -75,54 +75,54 @@ export const DictationSession: React.FC<Props> = ({ list, onComplete, onExit }) 
 
         <div className="flex flex-col items-center w-full z-10">
           <div className={`
-            text-4xl md:text-6xl font-bold tracking-wide text-center transition-all duration-300
+            text-6xl md:text-8xl lg:text-[7rem] font-bold tracking-wide text-center transition-all duration-300
             ${isRevealed ? 'text-slate-800 scale-100 blur-0' : 'text-slate-300 scale-95 blur-md select-none'}
           `}>
             {isRevealed ? currentWord : '•••••••'}
           </div>
-          <p className={`mt-4 text-slate-400 font-medium transition-opacity ${isRevealed ? 'opacity-100' : 'opacity-0'}`}>
+          <p className={`mt-6 text-slate-400 font-semibold text-lg md:text-xl transition-opacity ${isRevealed ? 'opacity-100' : 'opacity-0'}`}>
             {isRevealed ? 'Spelling revealed' : 'Hidden'}
           </p>
         </div>
 
-        <div className="z-10">
+        <div className="z-10 mt-4">
           <button
             onClick={handleSpeak}
             className={`
-                w-32 h-32 rounded-full flex items-center justify-center shadow-lg transform transition-all duration-200
-                ${isPlaying ? 'bg-indigo-600 scale-95 ring-4 ring-indigo-200' : 'bg-indigo-500 hover:bg-indigo-600 hover:-translate-y-1 active:scale-95 active:translate-y-0'}
+                w-40 h-40 md:w-56 md:h-56 rounded-full flex items-center justify-center shadow-lg transform transition-all duration-200 mx-auto group outline-none focus:ring-8 focus:ring-indigo-300
+                ${isPlaying ? 'bg-indigo-600 scale-95 ring-8 ring-indigo-200' : 'bg-indigo-500 hover:bg-indigo-600 hover:-translate-y-2 active:scale-95 active:translate-y-0'}
               `}
           >
-            <Volume2 size={48} color="white" strokeWidth={2.5} className={isPlaying ? 'animate-pulse' : ''} />
+            <Volume2 size={80} color="white" strokeWidth={2.5} className={isPlaying ? 'animate-pulse' : 'group-hover:scale-110 transition-transform'} />
           </button>
-          <p className="text-center mt-4 text-slate-500 font-bold text-lg">Tap to Listen</p>
+          <p className="text-center mt-6 text-slate-500 font-bold text-xl md:text-2xl">Tap to Listen</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-6 mt-4 pb-4">
         <Button
           variant={isRevealed ? "secondary" : "outline"}
           onClick={toggleReveal}
           fullWidth
-          size="lg"
+          size="xl"
         >
           {isRevealed ? (
-            <><EyeOff size={24} className="mr-2" /> Hide Word</>
+            <><EyeOff size={32} className="mr-3" /> Hide Word</>
           ) : (
-            <><Eye size={24} className="mr-2" /> Show Word</>
+            <><Eye size={32} className="mr-3" /> Show Word</>
           )}
         </Button>
 
-        <div className="flex gap-2">
+        <div className="flex gap-4">
           {currentIndex > 0 && (
-            <Button variant="secondary" onClick={handlePrev} size="lg" className="px-4">
-              <ChevronLeft size={28} /> Back
+            <Button variant="secondary" onClick={handlePrev} size="xl" className="px-6 md:px-8">
+              <ChevronLeft size={32} /> Back
             </Button>
           )}
 
-          <Button variant="success" onClick={handleNext} fullWidth size="lg">
+          <Button variant="success" onClick={handleNext} fullWidth size="xl">
             {currentIndex === list.words.length - 1 ? 'Finish' : 'Next'}
-            <ChevronRight size={24} className="ml-2" />
+            <ChevronRight size={32} className="ml-2" />
           </Button>
         </div>
       </div>

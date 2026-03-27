@@ -42,7 +42,7 @@ export const SelectionScreen: React.FC<Props> = ({ lists, onSelect, onAdd, onDel
 
   if (isAdding) {
     return (
-      <div className="bg-white rounded-3xl p-6 shadow-xl border-2 border-blue-100">
+      <div className="bg-white rounded-3xl p-6 shadow-xl border-2 border-blue-100 max-w-2xl mx-auto w-full">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-slate-800">New Dictation List</h2>
           <button onClick={() => setIsAdding(false)} className="p-2 bg-slate-100 rounded-full text-slate-500">
@@ -100,9 +100,9 @@ export const SelectionScreen: React.FC<Props> = ({ lists, onSelect, onAdd, onDel
         </Button>
       </div>
 
-      <div className="grid gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
         {lists.length === 0 ? (
-          <div className="text-center py-12 bg-white/50 rounded-3xl border-2 border-dashed border-slate-300">
+          <div className="md:col-span-2 lg:col-span-3 text-center py-12 bg-white/50 rounded-3xl border-2 border-dashed border-slate-300">
             <p className="text-slate-500 font-medium">No lists yet! Click "New List" to start.</p>
           </div>
         ) : (
